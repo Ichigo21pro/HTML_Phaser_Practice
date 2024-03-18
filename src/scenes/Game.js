@@ -8,7 +8,9 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
-
+var fondo;
+var scoreTime;
+var tiempo = 0;
 export class Game extends Scene {
   constructor() {
     super('Game');
@@ -17,20 +19,21 @@ export class Game extends Scene {
   ///////////// CREATE ///////////
   create() {
     //  A simple background for our game
-    this.add.image(400, 300, 'sky');
+    fondo = this.add.image(this.scale.gameSize.width / 2, this.scale.gameSize.height / 2, 'sky');
+    fondo.setDisplaySize(this.scale.gameSize.width, this.scale.gameSize.height);
 
     //  The platforms group contains the ground and the 2 ledges we can jump on
-    console.log('this:', this);
+
     platforms = this.physics.add.staticGroup();
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    platforms.create(450, 725, 'ground').setScale(4).refreshBody();
 
     //  Now let's create some ledges
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
+    platforms.create(600, 550, 'ground');
+    platforms.create(50, 450, 'ground');
+    platforms.create(750, 380, 'ground');
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -62,6 +65,8 @@ export class Game extends Scene {
 
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
+    cursors.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    cursors.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     stars = this.physics.add.group({
@@ -79,6 +84,7 @@ export class Game extends Scene {
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    scoreTime = this.add.text(16, 50, 'Tiempo: 00:00:00', { fontSize: '32px', fill: '#000' });
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
@@ -86,9 +92,9 @@ export class Game extends Scene {
     this.physics.add.collider(bombs, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    this.physics.add.overlap(player, stars, collectStar, null, this);
+    this.physics.add.overlap(player, stars, this.collectStar, null, this);
 
-    this.physics.add.collider(player, bombs, hitBomb, null, this);
+    this.physics.add.collider(player, bombs, this.hitBomb, null, this);
   }
   ///////////// UPDATE ///////////
   update() {
@@ -96,11 +102,11 @@ export class Game extends Scene {
       return;
     }
 
-    if (cursors.left.isDown) {
+    if (cursors.left.isDown || cursors.A.isDown) {
       player.setVelocityX(-160);
 
       player.anims.play('left', true);
-    } else if (cursors.right.isDown) {
+    } else if (cursors.right.isDown || cursors.D.isDown) {
       player.setVelocityX(160);
 
       player.anims.play('right', true);
@@ -110,9 +116,11 @@ export class Game extends Scene {
       player.anims.play('turn');
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
+    if ((cursors.up.isDown || cursors.space.isDown) && player.body.touching.down) {
       player.setVelocityY(-330);
     }
+
+    this.tiempoReal();
   }
 
   ///////////// OTHER FUNCTION ///////////
@@ -150,5 +158,18 @@ export class Game extends Scene {
     player.anims.play('turn');
 
     gameOver = true;
+  }
+
+  ////////////// TIEMPO//////////
+  tiempoReal() {
+    tiempo += 1;
+
+    var horas = Math.floor(tiempo / 3600);
+    var minutos = Math.floor((tiempo % 3600) / 60);
+    var segundos = tiempo % 60;
+
+    var tiempoFormateado = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ':' + (segundos < 10 ? '0' : '') + segundos;
+
+    return scoreTime.setText('Tiempo: ' + tiempoFormateado);
   }
 }
