@@ -11,6 +11,10 @@ var scoreText;
 var fondo;
 var scoreTime;
 var tiempo = 0;
+var corazones;
+var corazon1;
+var corazon2;
+var corazon3;
 export class Game extends Scene {
   constructor() {
     super('Game');
@@ -95,9 +99,17 @@ export class Game extends Scene {
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
 
     this.physics.add.collider(player, bombs, this.hitBomb, null, this);
+
+    // Añadimos los corazones
+    corazones = this.add.group();
+    corazones.create(this.scale.gameSize.width - 40, 20, 'heart').setOrigin(1, 0);
+
+    var corazon1 = corazones.create(this.scale.gameSize.width - 70, 20, 'heart').setOrigin(1, 0);
+    var corazon2 = corazones.create(this.scale.gameSize.width - 100, 20, 'heart').setOrigin(1, 0);
+    var corazon3 = corazones.create(this.scale.gameSize.width - 100, 20, 'heart').setOrigin(1, 0);
   }
   ///////////// UPDATE ///////////
-  update() {
+  update(time, deltaTime) {
     if (gameOver) {
       return;
     }
@@ -120,7 +132,7 @@ export class Game extends Scene {
       player.setVelocityY(-330);
     }
 
-    this.tiempoReal();
+    this.tiempoReal(deltaTime);
   }
 
   ///////////// OTHER FUNCTION ///////////
@@ -151,24 +163,33 @@ export class Game extends Scene {
   ///////////// HIT BOMB ///////////
 
   hitBomb(player, bomb) {
-    this.physics.pause();
+    // Obtener todos los corazones visibles
+    var visibleHearts = corazones.getChildren().filter((child) => child.visible);
 
-    player.setTint(0xff0000);
+    if (visibleHearts.length > 0) {
+      // Obtener el último corazón visible
+      var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
 
-    player.anims.play('turn');
-
-    gameOver = true;
+      // Ocultar el último corazón visible
+      lastVisibleHeart.setVisible(false);
+    } else {
+      // Si no quedan corazones, el juego termina
+      this.physics.pause();
+      player.setTint(0xff0000);
+      player.anims.play('turn');
+      gameOver = true;
+    }
   }
 
   ////////////// TIEMPO//////////
-  tiempoReal() {
-    tiempo += 1;
+  tiempoReal(deltaTime) {
+    tiempo += deltaTime / 1000;
 
     var horas = Math.floor(tiempo / 3600);
     var minutos = Math.floor((tiempo % 3600) / 60);
     var segundos = tiempo % 60;
 
-    var tiempoFormateado = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ':' + (segundos < 10 ? '0' : '') + segundos;
+    var tiempoFormateado = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ':' + Math.floor(segundos).toString().padStart(2, '0');
 
     return scoreTime.setText('Tiempo: ' + tiempoFormateado);
   }
