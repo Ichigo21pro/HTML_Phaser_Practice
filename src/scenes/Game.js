@@ -77,7 +77,7 @@ export class Game extends Scene {
     this.anims.create({
       key: 'bum2',
       frames: this.anims.generateFrameNumbers('explocion2', { start: 0, end: 8 }),
-      frameRate: 0.3,
+      frameRate: 0.9,
     });
 
     //  Input Events
@@ -164,27 +164,43 @@ export class Game extends Scene {
   ///////////// COLLECT START ///////////
 
   collectStar(player, star) {
-    star.disableBody(true, true);
+    star.disableBody(false, false);
+    // Animar la opacidad de la estrella recogida a 0 (transparente)
+    this.tweens.add({
+      targets: star,
+      alpha: 0, // Opacidad a 0
+      duration: 500, // Duración de la animación en milisegundos
+      onComplete: function () {
+        // Una vez que se complete la animación
+        // Deshabilitar el cuerpo de la estrella para que desaparezca
+        star.disableBody(true, true);
 
-    //  Add and update the score
-    score += 10;
-    scoreText.setText('Score: ' + score);
+        // Añadir puntos al puntaje
+        score += 10;
+        scoreText.setText('Score: ' + score);
 
-    if (stars.countActive(true) === 0) {
-      //  A new batch of stars to collect
-      stars.children.iterate(function (child) {
-        child.enableBody(true, child.x, 0, true, true);
-      });
+        // Crear nuevas estrellas si no quedan estrellas activas
+        if (stars.countActive(true) === 0) {
+          // Activar el cuerpo de todas las estrellas para que aparezcan nuevamente
+          stars.children.iterate(function (child) {
+            child.enableBody(true, child.x, 0, true, true);
+            child.setAlpha(1);
+          });
 
-      var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+          // Generar una nueva posición en el eje X para la próxima estrella
+          var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-      var bomb = bombs.create(x, 16, 'atlas', 'bomb.png');
-      bomb.setBounce(1);
-      bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      bomb.allowGravity = false;
-    }
+          // Crear una nueva bomba en la posición generada
+          var bomb = bombs.create(x, 16, 'atlas', 'bomb.png');
+          bomb.setBounce(1);
+          bomb.setCollideWorldBounds(true);
+          bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+          bomb.allowGravity = false;
+        }
+      },
+    });
   }
+
   ///////////// HIT BOMB ///////////
 
   hitBomb(player, bomb) {
@@ -197,17 +213,29 @@ export class Game extends Scene {
       var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
 
       // Ocultar y destruir el último corazón visible
-      lastVisibleHeart.setVisible(false);
-      lastVisibleHeart.destroy();
+      lastVisibleHeart.setVisible(true);
 
-      //congelar bomba cuando toca al jugador
-      bomb.body.setVelocity(0, 0);
-      bomb.body.enable = false;
-      //explocion
-      bomb.anims.play('bum', true).on('animationcomplete', function () {
-        bomb.destroy();
+      // Animar la escala del corazón a 0
+      this.tweens.add({
+        targets: lastVisibleHeart,
+        scaleX: 0,
+        scaleY: 0,
+        duration: 200, // Duración de la animación en milisegundos
+        onComplete: function () {
+          // Una vez que se complete la animación, destruir el corazón
+          lastVisibleHeart.destroy();
+        },
       });
     }
+
+    //congelar bomba cuando toca al jugador
+    bomb.body.setVelocity(0, 0);
+    bomb.body.enable = false;
+
+    //explocion
+    bomb.anims.play('bum', true).on('animationcomplete', function () {
+      bomb.destroy();
+    });
 
     // Verificar si no quedan más corazones
     if (corazones.countActive(true) === 0) {
@@ -249,7 +277,7 @@ export class Game extends Scene {
     bomb.setSize(40, 40);
 
     // Programar la explosión después de un cierto tiempo
-    this.time.delayedCall(30000, () => this.explodeBomb(bomb), [], this);
+    this.time.delayedCall(10000, () => this.explodeBomb(bomb), [], this);
   }
 
   ////
