@@ -172,7 +172,26 @@ export class Game extends Scene {
   ///////////// COLLECT START ///////////
 
   collectStar(player, star) {
+    var x = star.x;
+    var y = star.y;
     star.disableBody(false, false);
+    //////////////
+    // Crear el sistema de partículas
+    const emitter = this.add.particles(0, 0, 'atlas', {
+      frame: ['sparkle.png'],
+      lifespan: 4000,
+      speed: { min: 150, max: 250 },
+      scale: { start: 0.8, end: 0 },
+      gravityY: 150,
+      blendMode: 'ADD',
+      emitting: false,
+      x: x,
+      y: y,
+    });
+
+    //añadir particulas
+    emitter.explode(16, x, y);
+    //////////////
     // Animar la opacidad de la estrella recogida a 0 (transparente)
     this.tweens.add({
       targets: star,

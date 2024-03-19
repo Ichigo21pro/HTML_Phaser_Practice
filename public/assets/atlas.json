@@ -4,7 +4,7 @@
 			"image": "atlas",
 			"format": "RGBA8888",
 			"size": {
-				"w": 959,
+				"w": 991,
 				"h": 103
 			},
 			"scale": 1,
@@ -52,6 +52,27 @@
 					}
 				},
 				{
+					"filename": "sparkle.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 34,
+						"h": 34
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 894,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
 					"filename": "heart.png",
 					"rotated": false,
 					"trimmed": true,
@@ -66,7 +87,7 @@
 						"h": 30
 					},
 					"frame": {
-						"x": 894,
+						"x": 926,
 						"y": 0,
 						"w": 27,
 						"h": 30
@@ -87,7 +108,7 @@
 						"h": 22
 					},
 					"frame": {
-						"x": 921,
+						"x": 953,
 						"y": 0,
 						"w": 24,
 						"h": 22
@@ -108,7 +129,7 @@
 						"h": 14
 					},
 					"frame": {
-						"x": 945,
+						"x": 977,
 						"y": 0,
 						"w": 14,
 						"h": 14
