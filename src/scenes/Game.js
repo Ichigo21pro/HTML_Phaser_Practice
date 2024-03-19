@@ -12,9 +12,7 @@ var fondo;
 var scoreTime;
 var tiempo = 0;
 var corazones;
-var corazon1;
-var corazon2;
-var corazon3;
+var nextBombTime = 0;
 export class Game extends Scene {
   constructor() {
     super('Game');
@@ -74,6 +72,13 @@ export class Game extends Scene {
       frameRate: 10,
     });
 
+    // Animacion segunda Bomba //
+    this.anims.create({
+      key: 'bum2',
+      frames: this.anims.generateFrameNumbers('explocion2', { start: 0, end: 8 }),
+      frameRate: 0.3,
+    });
+
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
     cursors.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -114,6 +119,9 @@ export class Game extends Scene {
     corazones.create(this.scale.gameSize.width - 40, 20, 'atlas', 'heart.png').setOrigin(1, 0);
     corazones.create(this.scale.gameSize.width - 70, 20, 'atlas', 'heart.png').setOrigin(1, 0);
     corazones.create(this.scale.gameSize.width - 100, 20, 'atlas', 'heart.png').setOrigin(1, 0);
+
+    //tiempo en aparecer la segunda bomba
+    nextBombTime = this.time.now + 20000;
   }
   ///////////// UPDATE ///////////
   update(time, deltaTime) {
@@ -140,6 +148,12 @@ export class Game extends Scene {
     }
 
     this.tiempoReal(deltaTime);
+
+    // Lanzar la función para crear una bomba cada 20 segundos
+    if (this.time.now > nextBombTime) {
+      this.create2Bomb();
+      nextBombTime = this.time.now + 20000; // Establecer el próximo tiempo para la siguiente bomba
+    }
   }
 
   ///////////// OTHER FUNCTION ///////////
@@ -212,5 +226,32 @@ export class Game extends Scene {
     var tiempoFormateado = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ':' + Math.floor(segundos).toString().padStart(2, '0');
 
     return scoreTime.setText('Tiempo: ' + tiempoFormateado);
+  }
+
+  /////////// SEGUNDA BOMBA ////////
+  create2Bomb() {
+    var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+    var bomb = bombs.create(x, 16, 'explosion2');
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    bomb.allowGravity = false;
+
+    // Iniciar la animación al rebotar
+    bomb.anims.play('bum2', true);
+
+    // Programar la explosión después de un cierto tiempo
+    this.time.delayedCall(5000, this.explodeBomb, [bomb], this);
+  }
+
+  ////
+
+  explodeBomb(bomb) {
+    console.log(bomb);
+    // Detener la animación de rebote y cambiar a la animación de explosión
+    bomb.anims.stop('bum2');
+    bomb.anims.play('bum', true).on('animationcomplete', function () {
+      bomb.destroy();
+    });
   }
 }
