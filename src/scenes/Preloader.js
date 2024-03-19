@@ -26,15 +26,16 @@ export class Preloader extends Scene {
     //  Load the assets for the game - Replace with your own assets
     this.load.setPath('assets');
 
-    this.load.image('logo', 'logo.png');
+    //this.load.image('logo', 'logo.png');
 
     this.load.image('sky', 'sky.png');
-    this.load.image('ground', 'platform.png');
-    this.load.image('star', 'star.png');
-    this.load.image('bomb', 'bomb.png');
-    this.load.image('heart', 'heart.png');
+    //this.load.image('ground', 'platform.png');
+    //this.load.image('star', 'star.png');
+    //this.load.image('bomb', 'bomb.png');
+    //this.load.image('heart', 'heart.png');
     this.load.spritesheet('dude', 'dude.png', { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('explocion', 'explosion_scaled_down.png', { frameWidth: 32, frameHeight: 32 });
+    this.load.atlas('atlas', 'atlas.png', 'atlas.json');
   }
 
   create() {

@@ -32,12 +32,12 @@ export class Game extends Scene {
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(450, 725, 'ground').setScale(4).refreshBody();
+    platforms.create(450, 725, 'atlas', 'platform.png').setScale(4).refreshBody();
 
     //  Now let's create some ledges
-    platforms.create(600, 550, 'ground');
-    platforms.create(50, 450, 'ground');
-    platforms.create(750, 380, 'ground');
+    platforms.create(600, 550, 'atlas', 'platform.png');
+    platforms.create(50, 450, 'atlas', 'platform.png');
+    platforms.create(750, 380, 'atlas', 'platform.png');
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -81,7 +81,8 @@ export class Game extends Scene {
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     stars = this.physics.add.group({
-      key: 'star',
+      key: 'atlas',
+      frame: 'star.png',
       repeat: 11,
       setXY: { x: 12, y: 0, stepX: 70 },
     });
@@ -110,9 +111,9 @@ export class Game extends Scene {
     // Añadimos los corazones
 
     corazones = this.add.group();
-    corazones.create(this.scale.gameSize.width - 40, 20, 'heart').setOrigin(1, 0);
-    corazones.create(this.scale.gameSize.width - 70, 20, 'heart').setOrigin(1, 0);
-    corazones.create(this.scale.gameSize.width - 100, 20, 'heart').setOrigin(1, 0);
+    corazones.create(this.scale.gameSize.width - 40, 20, 'atlas', 'heart.png').setOrigin(1, 0);
+    corazones.create(this.scale.gameSize.width - 70, 20, 'atlas', 'heart.png').setOrigin(1, 0);
+    corazones.create(this.scale.gameSize.width - 100, 20, 'atlas', 'heart.png').setOrigin(1, 0);
   }
   ///////////// UPDATE ///////////
   update(time, deltaTime) {
@@ -159,7 +160,7 @@ export class Game extends Scene {
 
       var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-      var bomb = bombs.create(x, 16, 'bomb');
+      var bomb = bombs.create(x, 16, 'atlas', 'bomb.png');
       bomb.setBounce(1);
       bomb.setCollideWorldBounds(true);
       bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -171,7 +172,6 @@ export class Game extends Scene {
   hitBomb(player, bomb) {
     // Obtener todos los corazones visibles
     var visibleHearts = corazones.getChildren().filter((child) => child.visible);
-    console.log(visibleHearts);
 
     // Restar un corazón independientemente de si hay corazones visibles
     if (visibleHearts.length > 0) {
