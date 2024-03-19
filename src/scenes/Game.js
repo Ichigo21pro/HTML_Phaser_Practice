@@ -212,9 +212,6 @@ export class Game extends Scene {
       // Obtener el último corazón visible
       var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
 
-      // Ocultar y destruir el último corazón visible
-      lastVisibleHeart.setVisible(true);
-
       // Animar la escala del corazón a 0
       this.tweens.add({
         targets: lastVisibleHeart,
@@ -222,7 +219,8 @@ export class Game extends Scene {
         scaleY: 0,
         duration: 200, // Duración de la animación en milisegundos
         onComplete: function () {
-          // Una vez que se complete la animación, destruir el corazón
+          // Una vez que se complete la animación, ocultar y destruir el corazón
+          lastVisibleHeart.setVisible(false);
           lastVisibleHeart.destroy();
         },
       });
