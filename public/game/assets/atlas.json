@@ -1,0 +1,145 @@
+{
+	"textures": [
+		{
+			"image": "atlas",
+			"format": "RGBA8888",
+			"size": {
+				"w": 991,
+				"h": 103
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "logo.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 500,
+						"h": 108
+					},
+					"spriteSourceSize": {
+						"x": 3,
+						"y": 3,
+						"w": 494,
+						"h": 103
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 494,
+						"h": 103
+					}
+				},
+				{
+					"filename": "platform.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 400,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 400,
+						"h": 32
+					},
+					"frame": {
+						"x": 494,
+						"y": 0,
+						"w": 400,
+						"h": 32
+					}
+				},
+				{
+					"filename": "sparkle.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 34,
+						"h": 34
+					},
+					"spriteSourceSize": {
+						"x": 1,
+						"y": 1,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 894,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "heart.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 48,
+						"h": 48
+					},
+					"spriteSourceSize": {
+						"x": 12,
+						"y": 12,
+						"w": 27,
+						"h": 30
+					},
+					"frame": {
+						"x": 926,
+						"y": 0,
+						"w": 27,
+						"h": 30
+					}
+				},
+				{
+					"filename": "star.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 24,
+						"h": 22
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 24,
+						"h": 22
+					},
+					"frame": {
+						"x": 953,
+						"y": 0,
+						"w": 24,
+						"h": 22
+					}
+				},
+				{
+					"filename": "bomb.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 14,
+						"h": 14
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 14,
+						"h": 14
+					},
+					"frame": {
+						"x": 977,
+						"y": 0,
+						"w": 14,
+						"h": 14
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "http://free-tex-packer.com",
+		"version": "0.6.7"
+	}
+}
