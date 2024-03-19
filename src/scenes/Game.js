@@ -245,7 +245,7 @@ export class Game extends Scene {
     bomb.setSize(40, 40);
 
     // Programar la explosión después de un cierto tiempo
-    this.time.delayedCall(30000, this.explodeBomb, [bomb], this);
+    this.time.delayedCall(30000, () => this.explodeBomb(bomb), [], this);
   }
 
   ////
