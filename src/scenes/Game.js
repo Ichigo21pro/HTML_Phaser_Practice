@@ -258,11 +258,15 @@ export class Game extends Scene {
     }
 
     // Detener la animación de rebote
-    bomb.anims.stop('bum2');
+    if (bomb.anims) {
+      bomb.anims.stop('bum2');
+    }
 
     // Detener el movimiento de la bomba
-    bomb.body.setVelocity(0, 0);
-    bomb.body.enable = false;
+    if (bomb.body) {
+      bomb.body.setVelocity(0, 0);
+      bomb.body.enable = false;
+    }
 
     // Cambiar a la animación de explosión
     bomb.anims.play('bum', true).on('animationcomplete', function () {
