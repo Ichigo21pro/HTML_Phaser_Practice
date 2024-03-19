@@ -224,6 +224,12 @@ export class Game extends Scene {
           lastVisibleHeart.destroy();
         },
       });
+
+      // Realizar el efecto de screen shake
+      var shakeIntensity = 0.02; // Intensidad del shake
+      var shakeDuration = 2000; // Duración del shake en milisegundos
+
+      this.cameras.main.shake(shakeDuration, shakeIntensity);
     }
 
     //congelar bomba cuando toca al jugador
