@@ -46,7 +46,7 @@ export class Game extends Scene {
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
 
-    //  Our player animations, turning, walking left and walking right.
+    //  Animaciones de caminar //
     this.anims.create({
       key: 'left',
       frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -65,6 +65,13 @@ export class Game extends Scene {
       frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
       frameRate: 10,
       repeat: -1,
+    });
+
+    // Animaciones de Explocion //
+    this.anims.create({
+      key: 'bum',
+      frames: this.anims.generateFrameNumbers('explocion', { start: 1, end: 16 }),
+      frameRate: 10,
     });
 
     //  Input Events
@@ -172,6 +179,13 @@ export class Game extends Scene {
 
       // Ocultar el último corazón visible
       lastVisibleHeart.setVisible(false);
+      //congelar bomba cuando toca al jugador
+      bomb.body.setVelocity(0, 0);
+      bomb.body.enable = false;
+      //explocion
+      bomb.anims.play('bum', true).on('animationcomplete', function () {
+        bomb.destroy();
+      });
     } else {
       // Si no quedan corazones, el juego termina
       this.physics.pause();
