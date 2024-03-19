@@ -164,7 +164,7 @@ export class Game extends Scene {
     // Lanzar la función para crear una bomba cada 20 segundos
     if (this.time.now > nextBombTime) {
       this.create2Bomb();
-      nextBombTime = this.time.now + 20000; // Establecer el próximo tiempo para la siguiente bomba
+      nextBombTime = this.time.now + 2000; // Establecer el próximo tiempo para la siguiente bomba
     }
   }
 
@@ -331,6 +331,9 @@ export class Game extends Scene {
       return;
     }
 
+    // Ajustar el tamaño del sprite de la bomba
+    bomb.setScale(3); // Ajusta el valor según lo necesario
+
     // Detener la animación de rebote
     if (bomb.anims) {
       bomb.anims.stop('bum2');
@@ -339,7 +342,7 @@ export class Game extends Scene {
     // Detener el movimiento de la bomba
     if (bomb.body) {
       bomb.body.setVelocity(0, 0);
-      bomb.body.enable = false;
+      bomb.body.enable = true;
     }
 
     // Cambiar a la animación de explosión
@@ -348,6 +351,56 @@ export class Game extends Scene {
         // Una vez que la animación de explosión esté completa, destruir la bomba
         bomb.destroy();
       });
+    }
+
+    // Detectar colisión entre el jugador y la explosión
+    this.physics.add.overlap(player, bomb, this.hitPlayer, null, this);
+  }
+  hitPlayer(player, bomb) {
+    // Obtener todos los corazones visibles
+    var visibleHearts = corazones.getChildren().filter((child) => child.visible);
+
+    // Restar un corazón independientemente de si hay corazones visibles
+    if (visibleHearts.length > 0) {
+      // Obtener el último corazón visible
+      var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
+
+      // Animar la escala del corazón a 0
+      this.tweens.add({
+        targets: lastVisibleHeart,
+        scaleX: 0,
+        scaleY: 0,
+        duration: 200, // Duración de la animación en milisegundos
+        onComplete: function () {
+          // Una vez que se complete la animación, ocultar y destruir el corazón
+          lastVisibleHeart.setVisible(false);
+          lastVisibleHeart.destroy();
+        },
+      });
+      ////
+      // Realizar el efecto de screen shake
+      var shakeIntensity = 0.02; // Intensidad del shake
+      var shakeDuration = 2000; // Duración del shake en milisegundos
+      this.cameras.main.shake(shakeDuration, shakeIntensity);
+    }
+
+    // Verificar si no quedan más corazones
+    if (corazones.countActive(true) === 0) {
+      // Si no quedan corazones, el juego termina
+      this.physics.pause();
+      player.setTint(0xff0000);
+      player.anims.play('turn');
+      gameOver = true;
+
+      // Esperar 5 segundos antes de cambiar a la pantalla de Gameover
+      this.time.delayedCall(
+        5000,
+        () => {
+          this.gameOver();
+        },
+        [],
+        this
+      );
     }
   }
 
