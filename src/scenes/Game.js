@@ -70,7 +70,7 @@ export class Game extends Scene {
     // Animaciones de Explocion //
     this.anims.create({
       key: 'bum',
-      frames: this.anims.generateFrameNumbers('explocion', { start: 1, end: 16 }),
+      frames: this.anims.generateFrameNumbers('explocion', { start: 0, end: 15 }),
       frameRate: 10,
     });
 
@@ -108,12 +108,11 @@ export class Game extends Scene {
     this.physics.add.collider(player, bombs, this.hitBomb, null, this);
 
     // Añadimos los corazones
+
     corazones = this.add.group();
     corazones.create(this.scale.gameSize.width - 40, 20, 'heart').setOrigin(1, 0);
-
-    var corazon1 = corazones.create(this.scale.gameSize.width - 70, 20, 'heart').setOrigin(1, 0);
-    var corazon2 = corazones.create(this.scale.gameSize.width - 100, 20, 'heart').setOrigin(1, 0);
-    var corazon3 = corazones.create(this.scale.gameSize.width - 100, 20, 'heart').setOrigin(1, 0);
+    corazones.create(this.scale.gameSize.width - 70, 20, 'heart').setOrigin(1, 0);
+    corazones.create(this.scale.gameSize.width - 100, 20, 'heart').setOrigin(1, 0);
   }
   ///////////// UPDATE ///////////
   update(time, deltaTime) {
@@ -172,13 +171,17 @@ export class Game extends Scene {
   hitBomb(player, bomb) {
     // Obtener todos los corazones visibles
     var visibleHearts = corazones.getChildren().filter((child) => child.visible);
+    console.log(visibleHearts);
 
+    // Restar un corazón independientemente de si hay corazones visibles
     if (visibleHearts.length > 0) {
       // Obtener el último corazón visible
       var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
 
-      // Ocultar el último corazón visible
+      // Ocultar y destruir el último corazón visible
       lastVisibleHeart.setVisible(false);
+      lastVisibleHeart.destroy();
+
       //congelar bomba cuando toca al jugador
       bomb.body.setVelocity(0, 0);
       bomb.body.enable = false;
@@ -186,7 +189,10 @@ export class Game extends Scene {
       bomb.anims.play('bum', true).on('animationcomplete', function () {
         bomb.destroy();
       });
-    } else {
+    }
+
+    // Verificar si no quedan más corazones
+    if (corazones.countActive(true) === 0) {
       // Si no quedan corazones, el juego termina
       this.physics.pause();
       player.setTint(0xff0000);
