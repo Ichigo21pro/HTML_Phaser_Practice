@@ -1,28 +1,34 @@
 import { Scene } from 'phaser';
 
-export class GameOver extends Scene
-{
-    constructor ()
-    {
-        super('GameOver');
-    }
+export class GameOver extends Scene {
+  constructor() {
+    super('GameOver');
+  }
 
-    create ()
-    {
-        this.cameras.main.setBackgroundColor(0xff0000);
+  create(data) {
+    // Obtener la puntuación y el tiempo de los datos pasados desde la escena anterior
+    const { score, tiempo } = data;
+    this.cameras.main.setBackgroundColor(0xff0000);
 
-        this.add.image(512, 384, 'background').setAlpha(0.5);
+    this.add.image(512, 384, 'background').setAlpha(0.5);
 
-        this.add.text(512, 384, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5);
+    // Mostrar la puntuación y el tiempo
+    this.add.text(400, 200, 'Game Over', { fontSize: '48px', fill: '#fff' }).setOrigin(0.5);
+    this.add.text(400, 300, 'Score: ' + score, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+    this.add.text(400, 350, 'Tiempo: ' + tiempo, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
 
-        this.input.once('pointerdown', () => {
+    // Crear un rectángulo como borde del botón
+    const buttonBorder = this.add.rectangle(400, 450, 200, 50, 0xffffff).setStrokeStyle(3, 0x000000);
 
-            this.scene.start('MainMenu');
+    // Crear el texto del botón "Play Again"
+    const playAgainText = this.add.text(400, 450, 'Play Again', { fontSize: '32px', fill: '#000' }).setOrigin(0.5);
 
-        });
-    }
+    // Hacer que el botón sea interactivo
+    buttonBorder.setInteractive();
+
+    // Agregar evento de clic al botón
+    buttonBorder.on('pointerdown', () => {
+      this.scene.start('Game'); // Vuelve a iniciar el juego al hacer clic en "Play Again"
+    });
+  }
 }

@@ -14,6 +14,7 @@ var scoreTime;
 var tiempo = 0;
 var corazones;
 var nextBombTime = 0;
+
 export class Game extends Scene {
   constructor() {
     super('Game');
@@ -126,6 +127,13 @@ export class Game extends Scene {
 
     //tiempo en aparecer la segunda bomba
     nextBombTime = this.time.now + 20000;
+
+    /////////////////
+    // Añadir un evento de clic del ratón para cambiar a la escena de Gameover
+    this.input.on('pointerdown', () => {
+      this.gameOver();
+    });
+    ////////////////
   }
   ///////////// UPDATE ///////////
   update(time, deltaTime) {
@@ -224,7 +232,7 @@ export class Game extends Scene {
           lastVisibleHeart.destroy();
         },
       });
-
+      ////
       // Realizar el efecto de screen shake
       var shakeIntensity = 0.02; // Intensidad del shake
       var shakeDuration = 2000; // Duración del shake en milisegundos
@@ -248,6 +256,17 @@ export class Game extends Scene {
       player.setTint(0xff0000);
       player.anims.play('turn');
       gameOver = true;
+
+      //esperamos 5 segundos
+      //antes de cambiar a la pantalla de Gameover
+      this.time.delayedCall(
+        5000,
+        () => {
+          this.gameOver();
+        },
+        [],
+        this
+      );
     }
   }
 
@@ -259,9 +278,9 @@ export class Game extends Scene {
     var minutos = Math.floor((tiempo % 3600) / 60);
     var segundos = tiempo % 60;
 
-    var tiempoFormateado = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ':' + Math.floor(segundos).toString().padStart(2, '0');
+    this.tiempoFormateado = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ':' + Math.floor(segundos).toString().padStart(2, '0');
 
-    return scoreTime.setText('Tiempo: ' + tiempoFormateado);
+    return scoreTime.setText('Tiempo: ' + this.tiempoFormateado);
   }
 
   /////////// SEGUNDA BOMBA ////////
@@ -311,5 +330,11 @@ export class Game extends Scene {
         bomb.destroy();
       });
     }
+  }
+
+  //////////////////// GAME OVER /////////////////
+  gameOver() {
+    // Cambiar a la escena de Gameover y pasar la puntuación y el tiempo como datos
+    this.scene.start('GameOver', { score: score, tiempo: this.tiempoFormateado });
   }
 }
