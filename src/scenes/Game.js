@@ -240,17 +240,33 @@ export class Game extends Scene {
     // Iniciar la animación al rebotar
     bomb.anims.play('bum2', true);
 
+    // Establecer el tamaño del collider
+    // Refresh del cuerpo para aplicar el cambio en el tamaño del collider
+    bomb.setSize(40, 40);
+
     // Programar la explosión después de un cierto tiempo
-    this.time.delayedCall(5000, this.explodeBomb, [bomb], this);
+    this.time.delayedCall(30000, this.explodeBomb, [bomb], this);
   }
 
   ////
 
   explodeBomb(bomb) {
-    console.log(bomb);
-    // Detener la animación de rebote y cambiar a la animación de explosión
+    // Verificar si bomb es un objeto válido
+    if (!bomb) {
+      console.error('El objeto bomba es indefinido.');
+      return;
+    }
+
+    // Detener la animación de rebote
     bomb.anims.stop('bum2');
+
+    // Detener el movimiento de la bomba
+    bomb.body.setVelocity(0, 0);
+    bomb.body.enable = false;
+
+    // Cambiar a la animación de explosión
     bomb.anims.play('bum', true).on('animationcomplete', function () {
+      // Una vez que la animación de explosión esté completa, destruir la bomba
       bomb.destroy();
     });
   }
