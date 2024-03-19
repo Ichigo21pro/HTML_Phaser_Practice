@@ -3,6 +3,7 @@ import { Scene } from 'phaser';
 var player;
 var stars;
 var bombs;
+var bombs2;
 var platforms;
 var cursors;
 var score = 0;
@@ -98,6 +99,7 @@ export class Game extends Scene {
     });
 
     bombs = this.physics.add.group();
+    bombs2 = this.physics.add.group();
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
@@ -107,6 +109,8 @@ export class Game extends Scene {
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(bombs2, platforms);
+    this.physics.add.collider(bombs2, player);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
@@ -231,7 +235,7 @@ export class Game extends Scene {
   /////////// SEGUNDA BOMBA ////////
   create2Bomb() {
     var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-    var bomb = bombs.create(x, 16, 'explosion2');
+    var bomb = bombs2.create(x, 16, 'explosion2');
     bomb.setBounce(1);
     bomb.setCollideWorldBounds(true);
     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -269,9 +273,11 @@ export class Game extends Scene {
     }
 
     // Cambiar a la animación de explosión
-    bomb.anims.play('bum', true).on('animationcomplete', function () {
-      // Una vez que la animación de explosión esté completa, destruir la bomba
-      bomb.destroy();
-    });
+    if (bomb.anims) {
+      bomb.anims.play('bum', true).on('animationcomplete', function () {
+        // Una vez que la animación de explosión esté completa, destruir la bomba
+        bomb.destroy();
+      });
+    }
   }
 }
