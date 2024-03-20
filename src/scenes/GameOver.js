@@ -21,7 +21,7 @@ export class GameOver extends Scene {
     const buttonBorder = this.add.rectangle(400, 450, 200, 50, 0xffffff).setStrokeStyle(3, 0x000000);
 
     // Crear el texto del botón "Play Again"
-    const playAgainText = this.add.text(400, 450, 'Play Again', { fontSize: '32px', fill: '#000' }).setOrigin(0.5);
+    const playAgainText = this.add.text(400, 450, 'Play Again', { fontSize: '32px', fontFamily: 'Madimi One', fill: '#000' }).setOrigin(0.5);
 
     // Hacer que el botón sea interactivo
     buttonBorder.setInteractive();

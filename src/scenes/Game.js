@@ -137,7 +137,7 @@ export class Game extends Scene {
     /////////////////
     // Añadir un evento de clic del ratón para cambiar a la escena de Gameover
     this.input.on('pointerdown', () => {
-      this.gameOver();
+      //this.gameOver();
     });
     ////////////////
   }
@@ -168,7 +168,7 @@ export class Game extends Scene {
     }
 
     if (cursors.B.isDown) {
-      this.create2Bomb();
+      //this.create2Bomb();
     }
 
     this.tiempoReal(deltaTime);
