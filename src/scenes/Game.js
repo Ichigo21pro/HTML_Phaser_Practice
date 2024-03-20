@@ -132,6 +132,7 @@ export class Game extends Scene {
 
     // Cargar y reproducir música de fondo en bucle con un volumen reducido
     this.backgroundMusic = this.sound.add('backmusic', { loop: true, volume: 0.5 });
+    this.backgroundMusic.play();
 
     /////////////////
     // Añadir un evento de clic del ratón para cambiar a la escena de Gameover
@@ -413,6 +414,7 @@ export class Game extends Scene {
         [],
         this
       );
+      gameOver = false;
     }
   }
 
@@ -421,6 +423,8 @@ export class Game extends Scene {
     // Cambiar a la escena de Gameover y pasar la puntuación y el tiempo como datos
     this.scene.start('GameOver', { score: score, tiempo: this.tiempoFormateado });
     this.backgroundMusic.stop();
+    tiempo = 0;
+    score = 0;
   }
   //////////////////// DAMAGE SOUND ///////////////
   damageSound() {
