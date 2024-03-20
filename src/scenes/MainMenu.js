@@ -12,7 +12,7 @@ export class MainMenu extends Scene {
 
     this.add
       .text(512, 460, 'Main Menu', {
-        fontFamily: 'Arial Black',
+        fontFamily: 'Madimi One',
         fontSize: 38,
         color: '#ffffff',
         stroke: '#000000',

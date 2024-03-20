@@ -13,9 +13,9 @@ export class GameOver extends Scene {
     this.add.image(512, 384, 'background').setAlpha(0.5);
 
     // Mostrar la puntuación y el tiempo
-    this.add.text(400, 200, 'Game Over', { fontSize: '48px', fill: '#fff' }).setOrigin(0.5);
-    this.add.text(400, 300, 'Score: ' + score, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
-    this.add.text(400, 350, 'Tiempo: ' + tiempo, { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+    this.add.text(400, 200, 'Game Over', { fontSize: '48px', fontFamily: 'Madimi One', fill: '#fff' }).setOrigin(0.5);
+    this.add.text(400, 300, 'Score: ' + score, { fontSize: '32px', fontFamily: 'Madimi One', fill: '#fff' }).setOrigin(0.5);
+    this.add.text(400, 350, 'Tiempo: ' + tiempo, { fontSize: '32px', fontFamily: 'Madimi One', fill: '#fff' }).setOrigin(0.5);
 
     // Crear un rectángulo como borde del botón
     const buttonBorder = this.add.rectangle(400, 450, 200, 50, 0xffffff).setStrokeStyle(3, 0x000000);

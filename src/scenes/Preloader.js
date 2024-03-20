@@ -20,6 +20,12 @@ export class Preloader extends Scene {
       //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
       bar.width = 4 + 460 * progress;
     });
+    // Custom Webfonts
+    this.fonts = ['Madimi One'];
+    // Workaround for Phaser 3 not loading fonts until used
+    this.fonts.forEach((font) => {
+      this.add.text(0, 0, '', { fontFamily: font });
+    });
   }
 
   preload() {
