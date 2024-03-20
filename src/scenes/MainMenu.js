@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 export class MainMenu extends Scene {
   constructor() {
-    super('Pulsa para jugar');
+    super('MainMenu');
   }
 
   create() {
@@ -11,7 +11,7 @@ export class MainMenu extends Scene {
     this.add.image(512, 340, 'atlas', 'logo.png');
 
     this.add
-      .text(512, 460, 'Main Menu', {
+      .text(512, 460, 'Pulsa para jugar', {
         fontFamily: 'Arial Black',
         fontSize: 38,
         color: '#ffffff',
