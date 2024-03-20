@@ -1,0 +1,35 @@
+{
+  "resources": ["audiosprite.mp3"],
+  "spritemap": {
+    "botton": {
+      "start": 0,
+      "end": 0.156734693877551,
+      "loop": false
+    },
+    "damage": {
+      "start": 1.02,
+      "end": 1.9080045351473922,
+      "loop": false
+    },
+    "explosion": {
+      "start": 2.04,
+      "end": 5.088004535147393,
+      "loop": false
+    },
+    "jump": {
+      "start": 6.0600000000000005,
+      "end": 7.836009070294785,
+      "loop": false
+    },
+    "largeExplosion": {
+      "start": 8.08,
+      "end": 10.24,
+      "loop": false
+    },
+    "start": {
+      "start": 11.1,
+      "end": 11.82,
+      "loop": false
+    }
+  }
+}
