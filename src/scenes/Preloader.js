@@ -43,9 +43,10 @@ export class Preloader extends Scene {
     this.load.audio('explosion', 'explosion.mp3');
     this.load.audio('largeExplosion', 'largeExplosion.mp3');
     this.load.audio('jump', 'jump.mp3');
-    this.load.audio('music', 'music.mp3');
+    
     this.load.audio('start', 'start.mp3');*/
     this.load.audioSprite('audiosprite', 'audiosprite.json', ['audiosprite.mp3']);
+    this.load.audio('backmusic', 'BackMusic.mp3');
   }
 
   create() {
