@@ -37,6 +37,15 @@ export class Preloader extends Scene {
     this.load.spritesheet('explocion', 'explosion_scaled_down.png', { frameWidth: 36, frameHeight: 36 });
     this.load.spritesheet('explocion2', 'secondBomb.png', { frameWidth: 80, frameHeight: 80 });
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
+    //music
+    /*this.load.audio('botton', 'botton.mp3');
+    this.load.audio('damage', 'damage.mp3');
+    this.load.audio('explosion', 'explosion.mp3');
+    this.load.audio('largeExplosion', 'largeExplosion.mp3');
+    this.load.audio('jump', 'jump.mp3');
+    this.load.audio('music', 'music.mp3');
+    this.load.audio('start', 'start.mp3');*/
+    this.load.audioSprite('audiosprite', 'audiosprite.json', ['audiosprite.mp3']);
   }
 
   create() {

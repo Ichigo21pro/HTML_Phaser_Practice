@@ -14,6 +14,7 @@ var scoreTime;
 var tiempo = 0;
 var corazones;
 var nextBombTime = 0;
+var invulnerable = false;
 
 export class Game extends Scene {
   constructor() {
@@ -85,6 +86,7 @@ export class Game extends Scene {
     cursors = this.input.keyboard.createCursorKeys();
     cursors.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     cursors.D = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    cursors.B = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     stars = this.physics.add.group({
@@ -157,6 +159,12 @@ export class Game extends Scene {
 
     if ((cursors.up.isDown || cursors.space.isDown) && player.body.touching.down) {
       player.setVelocityY(-330);
+      //sound saltar
+      this.sound.playAudioSprite('audiosprite', 'jump');
+    }
+
+    if (cursors.B.isDown) {
+      this.create2Bomb();
     }
 
     this.tiempoReal(deltaTime);
@@ -164,7 +172,7 @@ export class Game extends Scene {
     // Lanzar la función para crear una bomba cada 20 segundos
     if (this.time.now > nextBombTime) {
       this.create2Bomb();
-      nextBombTime = this.time.now + 2000; // Establecer el próximo tiempo para la siguiente bomba
+      nextBombTime = this.time.now + 10000; // Establecer el próximo tiempo para la siguiente bomba
     }
   }
 
@@ -191,6 +199,8 @@ export class Game extends Scene {
 
     //añadir particulas
     emitter.explode(16, x, y);
+    //añadir sonido de recolectar estrellas
+    this.sound.playAudioSprite('audiosprite', 'start');
     //////////////
     // Animar la opacidad de la estrella recogida a 0 (transparente)
     this.tweens.add({
@@ -231,33 +241,11 @@ export class Game extends Scene {
   ///////////// HIT BOMB ///////////
 
   hitBomb(player, bomb) {
-    // Obtener todos los corazones visibles
-    var visibleHearts = corazones.getChildren().filter((child) => child.visible);
+    this.hitPlayer(player, bomb);
 
-    // Restar un corazón independientemente de si hay corazones visibles
-    if (visibleHearts.length > 0) {
-      // Obtener el último corazón visible
-      var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
-
-      // Animar la escala del corazón a 0
-      this.tweens.add({
-        targets: lastVisibleHeart,
-        scaleX: 0,
-        scaleY: 0,
-        duration: 200, // Duración de la animación en milisegundos
-        onComplete: function () {
-          // Una vez que se complete la animación, ocultar y destruir el corazón
-          lastVisibleHeart.setVisible(false);
-          lastVisibleHeart.destroy();
-        },
-      });
-      ////
-      // Realizar el efecto de screen shake
-      var shakeIntensity = 0.02; // Intensidad del shake
-      var shakeDuration = 2000; // Duración del shake en milisegundos
-
-      this.cameras.main.shake(shakeDuration, shakeIntensity);
-    }
+    this.sound.playAudioSprite('audiosprite', 'explosion', {
+      volume: 0.3, // Ajusta el volumen según sea necesario (0.0 - 1.0)
+    });
 
     //congelar bomba cuando toca al jugador
     bomb.body.setVelocity(0, 0);
@@ -267,26 +255,6 @@ export class Game extends Scene {
     bomb.anims.play('bum', true).on('animationcomplete', function () {
       bomb.destroy();
     });
-
-    // Verificar si no quedan más corazones
-    if (corazones.countActive(true) === 0) {
-      // Si no quedan corazones, el juego termina
-      this.physics.pause();
-      player.setTint(0xff0000);
-      player.anims.play('turn');
-      gameOver = true;
-
-      //esperamos 5 segundos
-      //antes de cambiar a la pantalla de Gameover
-      this.time.delayedCall(
-        5000,
-        () => {
-          this.gameOver();
-        },
-        [],
-        this
-      );
-    }
   }
 
   ////////////// TIEMPO//////////
@@ -306,7 +274,7 @@ export class Game extends Scene {
   create2Bomb() {
     var x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
     var bomb = bombs2.create(x, 16, 'explosion2');
-    bomb.setBounce(1);
+    bomb.setBounce(0.8);
     bomb.setCollideWorldBounds(true);
     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     bomb.allowGravity = false;
@@ -343,6 +311,8 @@ export class Game extends Scene {
     if (bomb.body) {
       bomb.body.setVelocity(0, 0);
       bomb.body.enable = true;
+      bomb.setImmovable(true);
+      bomb.body.allowGravity = false;
     }
 
     // Cambiar a la animación de explosión
@@ -351,37 +321,79 @@ export class Game extends Scene {
         // Una vez que la animación de explosión esté completa, destruir la bomba
         bomb.destroy();
       });
+      //sound explocion
+      this.sound.playAudioSprite('audiosprite', 'largeExplosion', {
+        volume: 0.3, // Ajusta el volumen según sea necesario (0.0 - 1.0)
+      });
     }
+
+    // Ajustar el collider del jugador a la posición de la explosión de la bomba
+    bomb.body.setCircle(25); // Ajusta el tamaño según sea necesario
+    bomb.body.setOffset(-5.5, -1.5); // Ajusta el offset para centrar el collider
+    // Configurar el cuerpo físico de la bomba para que no tenga colisión
+    bomb.body.checkCollision.none = true;
 
     // Detectar colisión entre el jugador y la explosión
     this.physics.add.overlap(player, bomb, this.hitPlayer, null, this);
   }
   hitPlayer(player, bomb) {
+    // Verificar si el jugador está invulnerable
+    if (invulnerable) {
+      return;
+    }
+
+    // Reproducir el sonido al recibir daño
+    this.damageSound();
+
     // Obtener todos los corazones visibles
     var visibleHearts = corazones.getChildren().filter((child) => child.visible);
 
     // Restar un corazón independientemente de si hay corazones visibles
     if (visibleHearts.length > 0) {
-      // Obtener el último corazón visible
-      var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
+      // Verificar si el jugador está invulnerable
+      if (invulnerable) {
+        // Permitir que el jugador pase a través del collider de la bomba
+        bomb.body.checkCollision.none = true;
+        return;
+      }
 
-      // Animar la escala del corazón a 0
-      this.tweens.add({
-        targets: lastVisibleHeart,
-        scaleX: 0,
-        scaleY: 0,
-        duration: 200, // Duración de la animación en milisegundos
-        onComplete: function () {
-          // Una vez que se complete la animación, ocultar y destruir el corazón
-          lastVisibleHeart.setVisible(false);
-          lastVisibleHeart.destroy();
-        },
-      });
-      ////
-      // Realizar el efecto de screen shake
-      var shakeIntensity = 0.02; // Intensidad del shake
-      var shakeDuration = 2000; // Duración del shake en milisegundos
-      this.cameras.main.shake(shakeDuration, shakeIntensity);
+      // Reproducir el sonido al recibir daño
+      this.damageSound();
+
+      // Obtener todos los corazones visibles
+      var visibleHearts = corazones.getChildren().filter((child) => child.visible);
+
+      // Restar un corazón independientemente de si hay corazones visibles
+      if (visibleHearts.length > 0) {
+        // Obtener el último corazón visible
+        var lastVisibleHeart = visibleHearts[visibleHearts.length - 1];
+
+        // Animar la escala del corazón a 0
+        this.tweens.add({
+          targets: lastVisibleHeart,
+          scaleX: 0,
+          scaleY: 0,
+          duration: 200, // Duración de la animación en milisegundos
+          onComplete: () => {
+            // Una vez que se complete la animación, ocultar y destruir el corazón
+            lastVisibleHeart.setVisible(false);
+            lastVisibleHeart.destroy();
+          },
+        });
+        // Realizar el efecto de screen shake
+        var shakeIntensity = 0.02; // Intensidad del shake
+        var shakeDuration = 2000; // Duración del shake en milisegundos
+        this.cameras.main.shake(shakeDuration, shakeIntensity);
+
+        // Marcar al jugador como invulnerable durante un período de tiempo
+        invulnerable = true;
+        this.time.delayedCall(2000, () => {
+          invulnerable = false; // El jugador ya no es invulnerable después de 2 segundos
+        });
+      } else {
+        // Si no hay corazones visibles, realizar acciones de juego sobre la muerte del jugador, como reiniciar el nivel, etc.
+        this.gameOver();
+      }
     }
 
     // Verificar si no quedan más corazones
@@ -408,5 +420,9 @@ export class Game extends Scene {
   gameOver() {
     // Cambiar a la escena de Gameover y pasar la puntuación y el tiempo como datos
     this.scene.start('GameOver', { score: score, tiempo: this.tiempoFormateado });
+  }
+  //////////////////// DAMAGE SOUND ///////////////
+  damageSound() {
+    this.sound.playAudioSprite('audiosprite', 'damage');
   }
 }
