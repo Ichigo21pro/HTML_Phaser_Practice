@@ -8,11 +8,11 @@ export class MainMenu extends Scene {
   create() {
     this.add.image(512, 384, 'background');
 
-    this.add.image(512, 300, 'atlas', 'logo.png');
+    this.add.image(512, 340, 'atlas', 'logo.png');
 
     this.add
       .text(512, 460, 'Main Menu', {
-        fontFamily: 'Madimi One',
+        fontFamily: 'Arial Black',
         fontSize: 38,
         color: '#ffffff',
         stroke: '#000000',
