@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 export class MainMenu extends Scene {
   constructor() {
-    super('MainMenu');
+    super('Pulsa para jugar');
   }
 
   create() {
