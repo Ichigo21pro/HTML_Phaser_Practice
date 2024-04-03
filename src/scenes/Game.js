@@ -15,7 +15,10 @@ var tiempo = 0;
 var corazones;
 var nextBombTime = 0;
 var invulnerable = false;
-
+//
+var backgroundMusic;
+var musicaActivada = true;
+//
 export class Game extends Scene {
   constructor() {
     super("Game");
@@ -35,10 +38,23 @@ export class Game extends Scene {
 
     platforms = this.physics.add.staticGroup();
 
+    //  Here we create the ground.
+    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+    platforms
+      .create(450, 725, "atlas", "platform.png")
+      .setScale(4)
+      .refreshBody();
+
+    //  Now let's create some ledges
+    platforms.create(600, 550, "atlas", "platform.png");
+    platforms.create(50, 450, "atlas", "platform.png");
+    platforms.create(750, 380, "atlas", "platform.png");
+
+    //botones
     //boton silenciar sonido
     // Agrega un botón
     var button = this.add
-      .text(400, 300, "Silenciar Música", { fill: "#FFFFFF" })
+      .text(820, 710, "Silenciar Música", { fill: "#FFFFFF" })
       .setInteractive();
 
     // Obtén las dimensiones del texto
@@ -57,20 +73,18 @@ export class Game extends Scene {
     // Agrega un evento de clic al botón
     button.on("pointerdown", function () {
       // Aquí puedes especificar qué acción deseas que ocurra cuando se haga clic en el botón
-      console.log("El botón fue clicado");
+      if (musicaActivada) {
+        // Si la música está activada, desactívala
+        backgroundMusic.stop();
+        // Actualiza el estado de la música
+        musicaActivada = false;
+      } else {
+        // Si la música está desactivada, actívala
+        backgroundMusic.play();
+        // Actualiza el estado de la música
+        musicaActivada = true;
+      }
     });
-
-    //  Here we create the ground.
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms
-      .create(450, 725, "atlas", "platform.png")
-      .setScale(4)
-      .refreshBody();
-
-    //  Now let's create some ledges
-    platforms.create(600, 550, "atlas", "platform.png");
-    platforms.create(50, 450, "atlas", "platform.png");
-    platforms.create(750, 380, "atlas", "platform.png");
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, "dude");
@@ -181,11 +195,12 @@ export class Game extends Scene {
     nextBombTime = this.time.now + 20000;
 
     // Cargar y reproducir música de fondo en bucle con un volumen reducido
-    this.backgroundMusic = this.sound.add("backmusic", {
+    backgroundMusic = this.sound.add("backmusic", {
       loop: true,
       volume: 0.5,
     });
-    this.backgroundMusic.play();
+    backgroundMusic.play();
+    musicaActivada = true;
 
     /////////////////
     // Añadir un evento de clic del ratón para cambiar a la escena de Gameover
@@ -502,7 +517,8 @@ export class Game extends Scene {
       score: score,
       tiempo: this.tiempoFormateado,
     });
-    this.backgroundMusic.stop();
+    backgroundMusic.stop();
+    musicaActivada = false;
     tiempo = 0;
     score = 0;
   }
