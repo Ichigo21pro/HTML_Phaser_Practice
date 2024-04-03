@@ -269,7 +269,7 @@ export class Game extends Scene {
     // Crear el sistema de partículas
     const emitter = this.add.particles(0, 0, "atlas", {
       frame: ["sparkle.png"],
-      lifespan: 4000,
+      lifespan: 500,
       speed: { min: 150, max: 250 },
       scale: { start: 0.8, end: 0 },
       gravityY: 150,
