@@ -49,6 +49,9 @@ export class Game extends Scene {
     platforms.create(600, 550, "atlas", "platform.png");
     platforms.create(50, 450, "atlas", "platform.png");
     platforms.create(750, 380, "atlas", "platform.png");
+    platforms.create(950, 260, "atlas", "platform.png");
+    platforms.create(450, 160, "atlas", "platform.png");
+    platforms.create(-90, 290, "atlas", "platform.png");
 
     //botones
     //boton silenciar sonido
