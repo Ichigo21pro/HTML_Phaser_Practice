@@ -160,10 +160,12 @@ export class Game extends Scene {
     scoreText = this.add.text(16, 16, "score: 0", {
       fontSize: "32px",
       fill: "#000",
+      fontFamily: "Madimi One",
     });
     scoreTime = this.add.text(16, 50, "Time: 00:00:00", {
       fontSize: "32px",
       fill: "#000",
+      fontFamily: "Madimi One",
     });
 
     //  Collide the player and the stars with the platforms
