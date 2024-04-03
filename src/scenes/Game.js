@@ -321,6 +321,8 @@ export class Game extends Scene {
 
           // Crear una nueva bomba en la posición generada
           var bomb = bombs.create(x, 16, "atlas", "bomb.png");
+          bomb.setScale(2);
+          bomb.setSize(10, 10);
           bomb.setBounce(1);
           bomb.setCollideWorldBounds(true);
           bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -338,6 +340,8 @@ export class Game extends Scene {
     this.sound.playAudioSprite("audiosprite", "explosion", {
       volume: 0.3, // Ajusta el volumen según sea necesario (0.0 - 1.0)
     });
+    // Ajustar el tamaño de la bomba
+    //bomb.setScale(3); // Ajusta el tamaño según sea necesario
 
     //congelar bomba cuando toca al jugador
     bomb.body.setVelocity(0, 0);
