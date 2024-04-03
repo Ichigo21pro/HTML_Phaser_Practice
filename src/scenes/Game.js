@@ -54,7 +54,7 @@ export class Game extends Scene {
     //boton silenciar sonido
     // Agrega un botón
     var button = this.add
-      .text(820, 710, "Silenciar Música", { fill: "#FFFFFF" })
+      .text(820, 710, "Stop music", { fill: "#FFFFFF" })
       .setInteractive();
 
     // Obtén las dimensiones del texto
@@ -161,7 +161,7 @@ export class Game extends Scene {
       fontSize: "32px",
       fill: "#000",
     });
-    scoreTime = this.add.text(16, 50, "Tiempo: 00:00:00", {
+    scoreTime = this.add.text(16, 50, "Time: 00:00:00", {
       fontSize: "32px",
       fill: "#000",
     });
@@ -246,7 +246,14 @@ export class Game extends Scene {
 
     // Lanzar la función para crear una bomba cada 20 segundos
     if (this.time.now > nextBombTime) {
-      this.create2Bomb();
+      // Generar un número aleatorio entre 1 y 3 para determinar cuántas bombas crear
+      var numBombsToCreate = Phaser.Math.Between(1, 3);
+
+      // Crear el número aleatorio de bombas
+      for (var i = 0; i < numBombsToCreate; i++) {
+        // Crear una bomba
+        this.create2Bomb();
+      }
       nextBombTime = this.time.now + 10000; // Establecer el próximo tiempo para la siguiente bomba
     }
   }
@@ -352,7 +359,7 @@ export class Game extends Scene {
       ":" +
       Math.floor(segundos).toString().padStart(2, "0");
 
-    return scoreTime.setText("Tiempo: " + this.tiempoFormateado);
+    return scoreTime.setText("Time: " + this.tiempoFormateado);
   }
 
   /////////// SEGUNDA BOMBA ////////
