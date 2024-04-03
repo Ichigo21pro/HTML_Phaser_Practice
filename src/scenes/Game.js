@@ -442,7 +442,11 @@ export class Game extends Scene {
       this.hitPlayer(player, bomb);
     }
   }
+
+  /////
+  /////
   hitPlayer(player, bomb) {
+    console.log("Tipo de bomba:", bomb.texture.key);
     // Verificar si el jugador está invulnerable
     if (invulnerable) {
       return;
@@ -485,8 +489,19 @@ export class Game extends Scene {
       );
       ///
       // Realizar el efecto de screen shake
-      var shakeIntensity = 0.02; // Intensidad del shake
-      var shakeDuration = 2000; // Duración del shake en milisegundos
+      var shakeIntensity;
+      var shakeDuration;
+
+      // Ajustar la intensidad y duración del shake según el tipo de bomba
+      if (bomb.texture.key === "explocion") {
+        // Si es una bomb2
+        shakeIntensity = 0.02; // Intensidad del shake mayor
+        shakeDuration = 3000; // Duración del shake más larga
+      } else {
+        // Si es una bomba normal
+        shakeIntensity = 0.001; // Intensidad del shake menor
+        shakeDuration = 2000; // Duración del shake más corta
+      }
       this.cameras.main.shake(shakeDuration, shakeIntensity);
 
       // Marcar al jugador como invulnerable durante un período de tiempo
