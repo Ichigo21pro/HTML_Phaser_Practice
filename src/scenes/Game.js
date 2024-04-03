@@ -214,32 +214,34 @@ export class Game extends Scene {
     if (gameOver) {
       return;
     }
+    // Verificar si el juego está en curso antes de permitir que el jugador responda a las entradas del teclado
+    if (!gameOver) {
+      if (cursors.left.isDown || cursors.A.isDown) {
+        player.setVelocityX(-160);
 
-    if (cursors.left.isDown || cursors.A.isDown) {
-      player.setVelocityX(-160);
+        player.anims.play("left", true);
+      } else if (cursors.right.isDown || cursors.D.isDown) {
+        player.setVelocityX(160);
 
-      player.anims.play("left", true);
-    } else if (cursors.right.isDown || cursors.D.isDown) {
-      player.setVelocityX(160);
+        player.anims.play("right", true);
+      } else {
+        player.setVelocityX(0);
 
-      player.anims.play("right", true);
-    } else {
-      player.setVelocityX(0);
+        player.anims.play("turn");
+      }
 
-      player.anims.play("turn");
-    }
+      if (
+        (cursors.up.isDown || cursors.space.isDown) &&
+        player.body.touching.down
+      ) {
+        player.setVelocityY(-330);
+        //sound saltar
+        this.sound.playAudioSprite("audiosprite", "jump");
+      }
 
-    if (
-      (cursors.up.isDown || cursors.space.isDown) &&
-      player.body.touching.down
-    ) {
-      player.setVelocityY(-330);
-      //sound saltar
-      this.sound.playAudioSprite("audiosprite", "jump");
-    }
-
-    if (cursors.B.isDown) {
-      //this.create2Bomb();
+      if (cursors.B.isDown) {
+        //this.create2Bomb();
+      }
     }
 
     this.tiempoReal(deltaTime);
@@ -504,22 +506,23 @@ export class Game extends Scene {
 
     // Verificar si no quedan más corazones
     if (corazones.countActive(true) === 0) {
+      gameOver = true;
       // Si no quedan corazones, el juego termina
       this.physics.pause();
       player.setTint(0xff0000);
       player.anims.play("turn");
-      gameOver = true;
+      // Detener todas las animaciones del jugador
 
       // Esperar 5 segundos antes de cambiar a la pantalla de Gameover
       this.time.delayedCall(
         5000,
         () => {
           this.gameOver();
+          gameOver = false;
         },
         [],
         this
       );
-      gameOver = false;
     }
   }
 
