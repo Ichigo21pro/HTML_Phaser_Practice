@@ -446,7 +446,6 @@ export class Game extends Scene {
   /////
   /////
   hitPlayer(player, bomb) {
-    console.log("Tipo de bomba:", bomb.texture.key);
     // Verificar si el jugador está invulnerable
     if (invulnerable) {
       return;
@@ -478,15 +477,7 @@ export class Game extends Scene {
         },
       });
       //cambiar el color de player cuando recibe daño
-      player.setTint(0xff0000);
-      this.time.delayedCall(
-        100,
-        () => {
-          player.clearTint();
-        },
-        [],
-        this
-      );
+      this.tintAndBlink();
       ///
       // Realizar el efecto de screen shake
       var shakeIntensity;
@@ -547,5 +538,37 @@ export class Game extends Scene {
   //////////////////// DAMAGE SOUND ///////////////
   damageSound() {
     this.sound.playAudioSprite("audiosprite", "damage");
+  }
+  ///////////////////// TINT DAMAGE ////////////////
+  // Función para hacer que el jugador parpadee con tintado rojo
+  tintAndBlink() {
+    // Tiempo total que durará el tintado y el parpadeo (en milisegundos)
+    var totalDuration = 1000;
+    // Duración de cada parpadeo (en milisegundos)
+    var flashDuration = 100;
+    // Número de parpadeos
+    var numFlashes = totalDuration / (2 * flashDuration);
+
+    // Función para hacer que el jugador parpadee con tintado rojo
+    function tintAndBlink() {
+      // Realizar el tintado
+      player.setTint(0xff0000);
+
+      // Programar la eliminación del tintado después de flashDuration milisegundos
+      this.time.delayedCall(
+        flashDuration,
+        function () {
+          player.clearTint();
+        },
+        [],
+        this
+      );
+    }
+
+    // Repetir el tintado y el parpadeo varias veces
+    for (var i = 0; i < numFlashes; i++) {
+      // Programar el tintado y el parpadeo para que ocurra en momentos alternos
+      this.time.delayedCall(i * 2 * flashDuration, tintAndBlink, [], this);
+    }
   }
 }
