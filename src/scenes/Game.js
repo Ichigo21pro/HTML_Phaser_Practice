@@ -348,22 +348,29 @@ export class Game extends Scene {
 
   ////////////// TIEMPO//////////
   tiempoReal(deltaTime) {
-    tiempo += deltaTime / 1000;
+    // Verificar si el juego está pausado
+    if (!gameOver) {
+      // Incrementar el tiempo solo si el juego no está pausado
+      tiempo += deltaTime / 1000;
 
-    var horas = Math.floor(tiempo / 3600);
-    var minutos = Math.floor((tiempo % 3600) / 60);
-    var segundos = tiempo % 60;
+      var horas = Math.floor(tiempo / 3600);
+      var minutos = Math.floor((tiempo % 3600) / 60);
+      var segundos = tiempo % 60;
 
-    this.tiempoFormateado =
-      (horas < 10 ? "0" : "") +
-      horas +
-      ":" +
-      (minutos < 10 ? "0" : "") +
-      minutos +
-      ":" +
-      Math.floor(segundos).toString().padStart(2, "0");
+      this.tiempoFormateado =
+        (horas < 10 ? "0" : "") +
+        horas +
+        ":" +
+        (minutos < 10 ? "0" : "") +
+        minutos +
+        ":" +
+        Math.floor(segundos).toString().padStart(2, "0");
 
-    return scoreTime.setText("Time: " + this.tiempoFormateado);
+      scoreTime.setText("Time: " + this.tiempoFormateado);
+    }
+
+    // Retornar el tiempo formateado incluso si el juego está pausado
+    return this.tiempoFormateado;
   }
 
   /////////// SEGUNDA BOMBA ////////
